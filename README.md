@@ -10,9 +10,9 @@ A Clojure library designed to ... well, shuffle.
 ;use this to shuffle the deck
 (shuf cut-size deck)
 
-;WIP
-;cycles, display a list of all of the cycles found while shuffling)
-(cycles cut-size deck)
+;use shuf-stats to get the number of shuffles needed to reorder
+;the deck
+(shuf-stats cut size)
 ```
 
 The naive implementation is done..

@@ -1,4 +1,5 @@
-(ns shuffle.core)
+(ns shuffle.core
+  (:require  [clojure.math.numeric-tower :as math]))
 
 (defn abs [x] 
   (if (< x 0) (- x) x))
@@ -57,10 +58,46 @@
           (flatten 
             (conj remainder (vec (interleave bottom top)))))))
 
+(def shuf-memo (memoize shuf))
+ 
 (defn shuf-sort [cut init deck]
   (loop [deck deck cnt init]
     (if (= deck (sort deck))
       cnt
-      (recur (shuf cut deck) (inc cnt)))))
+      (recur (shuf-memo cut deck) (inc cnt)))))
+
+(defn shuf-list [cut init deck]
+  (loop [deck deck cnt init accum (range (count deck))]
+    (if (= deck (sort deck))
+      accum 
+      (recur 
+        (shuf-memo cut deck) 
+        (inc cnt) 
+        (map (fn [coll x] (list coll x) ) accum deck)))))
+
+(defn shuf-times [cut init times deck]
+ (loop [deck deck 
+        cnt init 
+        accum (range (count deck))]
+    (if (= times cnt)
+      accum 
+      (recur 
+        (shuf-memo cut deck) 
+        (inc cnt) 
+        (map (fn [coll x] (list coll x) ) accum deck)))) 
+
+ )
+(defn shuf-sets [cut len times]
+(set (map  (comp set flatten)  
+       (shuf-times cut 1 times (shuf cut  (range len))))))
 
 
+(defn shuf-stats [cut len]
+  (let [cycles  (shuf-sets cut len len)
+        factors (map count cycles)
+        times   (reduce math/lcm (flatten factors))]
+  {:cycles  cycles,
+   :factors factors,
+   :times   times,
+   :len     len,
+   :cut     cut}))
