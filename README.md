@@ -14,9 +14,12 @@ A Clojure library designed to ... well, shuffle.
 ;the deck
 (shuf-stats cut size)
 ```
+Shuf-stats works by running shuffle a the number of times there are
+cards in the deck to build up a list of all of the cycles that occur
+when you shuffle the deck. Then it gets the least common multiple of
+the lengths of all of the cycles, this is the number of times you
+would have to shuffle the deck to get it back to it's original state.
 
-The naive implementation is done..
-Next up is expermenting/adding a way to get the cycles out of a list
 ## License
 
 Copyright © 2013 FIXME
